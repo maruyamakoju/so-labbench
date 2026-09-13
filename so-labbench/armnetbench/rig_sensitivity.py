@@ -28,6 +28,7 @@
 import argparse
 import csv
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -346,4 +347,17 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    code = main()
+    # Leave without waiting for the interpreter to tear itself down. On the first cell of the
+    # SmolVLA grid this process wrote its CSV and its last line of output and then sat there,
+    # at roughly zero CPU, never exiting - torch and the hub leave threads behind that can
+    # outlive the work. The shell loop was blocked on it, so seven tasks that were queued
+    # behind a finished one would have waited all night for nothing.
+    #
+    # Everything that matters is already on disk by this point: the CSV is written and closed
+    # above, and the streams are flushed here. There is no state left to lose by not unwinding
+    # politely, and a batch cell that has produced its result should not be able to hold up
+    # the cells behind it.
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(code)
