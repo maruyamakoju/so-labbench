@@ -76,6 +76,43 @@ A note on method: the wrist-camera frames suggested the opposite conclusion, tha
 policies were never holding the cable. The action trace refuted it. Had the order been
 reversed, a plausible mistake would have been published.
 
+**Corrected by the next finding:** the grasp-count observation above is real for
+`cable_clip` and does not generalise. Tested across all 56 cells it does not predict success,
+so grasp count is not usable as a health indicator for a policy or a task.
+
+### Grasping more often than the human does not predict failure (negative)
+[`so-labbench/finding_retry_does_not_predict.md`](so-labbench/finding_retry_does_not_predict.md)
+
+The obvious next question after `cable_clip`: do policies that retry more than the human fail
+more? Asked of all 2,499 rollouts, eight tasks by seven policies, the answer is no, and the
+way it is no is worth more than the answer.
+
+Inside a policy-task cell, where task difficulty and policy identity cancel, failed rollouts
+grasp more often than successful ones in 24 of 43 cells. A coin flip (sign test p = 0.271),
+median difference 0.007 closures per second.
+
+Between tasks the correlation depends entirely on a choice nobody would question. Raw
+closures per second correlates with success at **r = +0.34** [+0.09, +0.56]. The same
+quantity expressed as a multiple of the human's rate on the same task correlates at
+**r = -0.38** [-0.58, -0.12]. Same data, same 56 cells, opposite signs, both excluding zero.
+The reason is measurable: the human's own grasp rate correlates with the task's mean success
+rate at r = +0.89, so it is a proxy for task difficulty, and dividing by it flips the sign.
+
+Vary the two remaining free choices - where the open/closed threshold sits, and how long a
+closure must last to count - and the correlation moves between +0.46 and -0.40 while the
+within-cell test wanders from p = 0.033 to p = 0.937. Drop the one task the hypothesis came
+from and the headline correlation falls from -0.38 to -0.22, crossing zero.
+
+The threshold is not assumed anywhere: it is measured per task from that task's own
+demonstrations, because an action value is a percentage of one arm's calibrated range and a
+constant imported from elsewhere would mean nothing. The counting itself is checked against
+24 hand-built traces with known answers.
+
+**For anyone analysing ArmnetBench traces:** publish both the threshold and the normalisation,
+and check whether your quantity correlates with task difficulty before reporting a
+cross-task correlation. Three defensible choices here span a full sign change, and most of
+that range "excludes zero".
+
 ### Policies that never succeed still respond strongly to what they see
 [`so-labbench/finding_sensitivity_vs_success.md`](so-labbench/finding_sensitivity_vs_success.md)
 
