@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+
+# Transient stdout captures of long runs. The CSV beside each one is the result.
+*.out
+*.log

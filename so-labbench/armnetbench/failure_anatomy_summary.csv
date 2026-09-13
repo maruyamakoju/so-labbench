@@ -1,0 +1,15 @@
+task,policy,n,success,observed,reached,ended_at,median_off,frames
+cable_clip,act,60,0.0,0.0,0.583,0.249,0.365,968
+cable_clip,diffusion,30,0.0,0.0,0.889,0.204,0.295,905
+cable_clip,grootn1.7,30,0.0,0.0,0.868,0.31,0.495,890
+cable_clip,molmoact2,60,0.0,0.0,0.748,0.348,0.345,438
+cable_clip,pi0,30,0.0,0.0,0.888,0.344,0.495,1156
+cable_clip,pi0.5,30,0.0,0.0,0.909,0.459,0.28,1055
+cable_clip,smolvla,30,0.0,0.0,0.867,0.427,0.385,869
+eye_drops_to_basket,act,30,0.633,0.633,0.801,0.643,0.33,186
+eye_drops_to_basket,diffusion,30,0.433,0.433,0.905,0.69,0.23,400
+eye_drops_to_basket,grootn1.7,30,0.667,0.667,0.808,0.698,0.38,165
+eye_drops_to_basket,molmoact2,60,0.333,0.333,0.825,0.395,0.355,428
+eye_drops_to_basket,pi0,30,0.7,0.7,0.848,0.75,0.26,188
+eye_drops_to_basket,pi0.5,30,0.667,0.667,0.846,0.74,0.27,169
+eye_drops_to_basket,smolvla,30,0.233,0.233,0.799,0.393,0.255,479

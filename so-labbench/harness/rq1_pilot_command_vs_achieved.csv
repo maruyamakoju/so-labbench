@@ -1,0 +1,11 @@
+run_id,model,cmd_min,obs_min,tracking_gap,cmd_closed_frames,obs_closed_frames,true_hz,cmd_closed_longest_s,commanded_closure,verdict
+eval_rq1_pilot_act_1,act,54.0,55.4,0.3,0,0,23.8,0.0,no,policy never commanded a closure
+eval_rq1_pilot_smolvla_1,smolvla,64.2,59.8,-0.4,0,0,19.4,0.0,no,policy never commanded a closure
+eval_rq1_pilot_smolvla_2,smolvla,66.8,61.7,-0.6,0,0,19.0,0.0,no,policy never commanded a closure
+eval_rq1_pilot_act_2,act,48.7,49.6,0.0,0,0,23.8,0.0,no,policy never commanded a closure
+eval_rq1_pilot_act_3,act,63.2,61.6,-1.0,0,0,23.8,0.0,no,policy never commanded a closure
+eval_rq1_pilot_smolvla_3,smolvla,65.7,61.9,0.3,0,0,19.6,0.0,no,policy never commanded a closure
+eval_rq1_pilot_smolvla_4,smolvla,65.3,61.6,-0.8,0,0,19.4,0.0,no,policy never commanded a closure
+eval_rq1_pilot_act_4,act,54.3,55.4,0.8,0,0,14.9,0.0,no,policy never commanded a closure
+eval_rq1_pilot_act_5,act,56.7,58.5,0.7,0,0,14.9,0.0,no,policy never commanded a closure
+eval_rq1_pilot_smolvla_5,smolvla,60.3,59.8,-0.2,0,0,13.4,0.0,no,policy never commanded a closure

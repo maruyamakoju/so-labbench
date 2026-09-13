@@ -1,0 +1,65 @@
+task,policy_type,rollouts,successful,suboptimal,mean_frames,success_rate,mean_sec_at_20fps
+Insert the colourful ring into the central wooden peg,act,30,15,0,358,0.5,17.9
+Insert the colourful ring into the central wooden peg,diffusion,30,7,0,434,0.233,21.7
+Insert the colourful ring into the central wooden peg,grootn1.7,30,18,0,323,0.6,16.2
+Insert the colourful ring into the central wooden peg,molmoact2,60,6,0,429,0.1,21.4
+Insert the colourful ring into the central wooden peg,pi0,30,5,0,529,0.167,26.4
+Insert the colourful ring into the central wooden peg,pi0.5,30,14,0,443,0.467,22.2
+Insert the colourful ring into the central wooden peg,smolvla,45,17,0,438,0.378,21.9
+Insert the colourful ring into the central wooden peg,teleoperated,50,50,0,234,1.0,11.7
+Insert the missing tool into the empty slot on the toolbox,act,60,7,9,515,0.117,25.8
+Insert the missing tool into the empty slot on the toolbox,diffusion,30,7,3,389,0.233,19.4
+Insert the missing tool into the empty slot on the toolbox,grootn1.7,30,5,10,343,0.167,17.2
+Insert the missing tool into the empty slot on the toolbox,molmoact2,60,5,4,489,0.083,24.4
+Insert the missing tool into the empty slot on the toolbox,pi0,30,12,4,483,0.4,24.2
+Insert the missing tool into the empty slot on the toolbox,pi0.5,30,16,3,428,0.533,21.4
+Insert the missing tool into the empty slot on the toolbox,smolvla,60,2,10,511,0.033,25.6
+Insert the missing tool into the empty slot on the toolbox,teleoperated,50,50,0,416,1.0,20.8
+Push the Displayport cable into the cable holder on the white block,act,60,0,0,927,0.0,46.4
+Push the Displayport cable into the cable holder on the white block,diffusion,30,0,0,901,0.0,45.0
+Push the Displayport cable into the cable holder on the white block,grootn1.7,30,0,0,817,0.0,40.8
+Push the Displayport cable into the cable holder on the white block,molmoact2,60,0,0,576,0.0,28.8
+Push the Displayport cable into the cable holder on the white block,pi0,30,0,0,1069,0.0,53.4
+Push the Displayport cable into the cable holder on the white block,pi0.5,30,0,0,961,0.0,48.0
+Push the Displayport cable into the cable holder on the white block,smolvla,30,0,0,865,0.0,43.2
+Push the Displayport cable into the cable holder on the white block,teleoperated,50,50,0,553,1.0,27.6
+Put the eye drops into the basket,act,30,19,0,421,0.633,21.0
+Put the eye drops into the basket,diffusion,30,13,0,326,0.433,16.3
+Put the eye drops into the basket,grootn1.7,30,20,0,230,0.667,11.5
+Put the eye drops into the basket,molmoact2,60,20,0,352,0.333,17.6
+Put the eye drops into the basket,pi0,30,21,0,246,0.7,12.3
+Put the eye drops into the basket,pi0.5,30,20,0,283,0.667,14.2
+Put the eye drops into the basket,smolvla,30,7,0,389,0.233,19.4
+Put the eye drops into the basket,teleoperated,50,50,0,183,1.0,9.2
+Put the eye drops on the shelf,act,60,0,0,483,0.0,24.2
+Put the eye drops on the shelf,diffusion,30,5,0,396,0.167,19.8
+Put the eye drops on the shelf,grootn1.7,30,13,0,274,0.433,13.7
+Put the eye drops on the shelf,molmoact2,60,14,0,363,0.233,18.2
+Put the eye drops on the shelf,pi0,29,22,0,277,0.759,13.8
+Put the eye drops on the shelf,pi0.5,30,21,0,278,0.7,13.9
+Put the eye drops on the shelf,smolvla,60,4,0,437,0.067,21.8
+Put the eye drops on the shelf,teleoperated,50,50,0,224,1.0,11.2
+Remove the power cable from cable holder,act,30,18,0,292,0.6,14.6
+Remove the power cable from cable holder,diffusion,30,2,0,659,0.067,33.0
+Remove the power cable from cable holder,grootn1.7,30,10,0,352,0.333,17.6
+Remove the power cable from cable holder,molmoact2,60,17,0,357,0.283,17.8
+Remove the power cable from cable holder,pi0,30,14,0,390,0.467,19.5
+Remove the power cable from cable holder,pi0.5,30,21,0,311,0.7,15.6
+Remove the power cable from cable holder,smolvla,30,11,0,594,0.367,29.7
+Remove the power cable from cable holder,teleoperated,50,50,0,227,1.0,11.4
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,act,30,8,0,543,0.267,27.2
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,diffusion,30,19,0,464,0.633,23.2
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,grootn1.7,30,9,2,335,0.3,16.8
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,molmoact2,60,6,3,529,0.1,26.4
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,pi0,30,3,1,602,0.1,30.1
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,pi0.5,30,4,2,636,0.133,31.8
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,smolvla,30,1,1,709,0.033,35.4
+Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox,teleoperated,50,50,0,319,1.0,16.0
+Stack the colouful blocks on top of each other,act,30,0,0,449,0.0,22.4
+Stack the colouful blocks on top of each other,diffusion,30,0,0,452,0.0,22.6
+Stack the colouful blocks on top of each other,grootn1.7,30,8,0,398,0.267,19.9
+Stack the colouful blocks on top of each other,molmoact2,60,3,0,397,0.05,19.8
+Stack the colouful blocks on top of each other,pi0,30,10,0,443,0.333,22.2
+Stack the colouful blocks on top of each other,pi0.5,30,13,0,446,0.433,22.3
+Stack the colouful blocks on top of each other,smolvla,45,3,0,437,0.067,21.8
+Stack the colouful blocks on top of each other,teleoperated,50,50,0,260,1.0,13.0

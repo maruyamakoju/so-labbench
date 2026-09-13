@@ -1,0 +1,46 @@
+{
+  "_note": "ArmnetBench v0.1, single-arm. Eight tasks, the teleoperated demonstrations that define each, and the public checkpoints. Published success rates are in reference_results.csv. act/diffusion/smolvla are lerobot checkpoints; pi0 and pi0.5 are openpi (JAX) and grootn1.7/molmoact2 need their own runtimes, so only the first three are loadable here - diffusion needs lerobot 0.6 because 0.5.1 refuses the mixed image sizes.",
+  "tasks": {
+    "block_stack": {
+      "instruction": "Stack the colouful blocks on top of each other",
+      "demos": "villekuosmanen/armnetbench_block_stack",
+      "policies": {"act": "pravsels/act_block_stack_20k", "smolvla": "pravsels/smolvla_block_stack", "diffusion": "villekuosmanen/armnetbench_block_stack_diffusion"}
+    },
+    "cable_clip": {
+      "instruction": "Push the Displayport cable into the cable holder on the white block",
+      "demos": "pravsels/cable_clip_remote_v2",
+      "policies": {"act": "pravsels/act_cable_clip_20k", "smolvla": "pravsels/smolvla_cable_clip", "diffusion": "villekuosmanen/cable_clip_remote_v2_diffusion"},
+      "_note": "every one of the seven policies scores exactly 0.000 on this task"
+    },
+    "cable_unclip": {
+      "instruction": "Remove the power cable from cable holder",
+      "demos": "pravsels/cable_unclip_remote",
+      "policies": {"act": "pravsels/act_cable_unclip_20k", "smolvla": "pravsels/smolvla_cable_unclip", "diffusion": "villekuosmanen/cable_unclip_remote_diffusion"}
+    },
+    "eye_drops_to_basket": {
+      "instruction": "Put the eye drops into the basket",
+      "demos": "pravsels/object_top_shelf_reset_remote",
+      "policies": {"act": "pravsels/act_eyedrops_basket_20k", "smolvla": "pravsels/smolvla_eyedrops_basket", "diffusion": "villekuosmanen/object_top_shelf_reset_remote_diffusion"}
+    },
+    "eye_drops_to_shelf": {
+      "instruction": "Put the eye drops on the shelf",
+      "demos": "pravsels/object_top_shelf_remote",
+      "policies": {"act": "pravsels/act_eyedrops_shelf", "smolvla": "pravsels/smolvla_eyedrops_shelf", "diffusion": "villekuosmanen/object_top_shelf_remote_diffusion"}
+    },
+    "ring_insert": {
+      "instruction": "Insert the colourful ring into the central wooden peg",
+      "demos": "villekuosmanen/armnetbench_ring_insert",
+      "policies": {"act": "pravsels/act_ring_insert_20k", "smolvla": "pravsels/smolvla_ring_insert", "diffusion": "villekuosmanen/armnetbench_ring_insert_diffusion"}
+    },
+    "tool_insert": {
+      "instruction": "Insert the missing tool into the empty slot on the toolbox",
+      "demos": "villekuosmanen/armnetbench_tool_insert",
+      "policies": {"act": "pravsels/act_tool_insert", "smolvla": "pravsels/smolvla_tool_insert", "diffusion": "villekuosmanen/armnetbench_tool_insert_diffusion"}
+    },
+    "tool_removal": {
+      "instruction": "Remove the small middle tool (3/8 Extension Bar 75mm) from the toolbox",
+      "demos": "villekuosmanen/armnetbench_tool_removal",
+      "policies": {"act": "pravsels/act_tool_removal_20k", "smolvla": "pravsels/smolvla_tool_removal", "diffusion": "villekuosmanen/armnetbench_tool_removal_diffusion"}
+    }
+  }
+}

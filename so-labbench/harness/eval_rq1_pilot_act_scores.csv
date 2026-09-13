@@ -1,0 +1,6 @@
+success,approach,grasp,lift,hold,taxonomy,hold_frames,hold_sec,true_hz,stable_f,hold_f,n_closures,window_onset,lift_gain,grip_min,lift_min,reversals,rev_per_s,moved,trial,status
+False,True,False,False,False,grasp_failure,0,0.0,23.8,12,24,0,0,0.0,55.36723327636719,-66.34735870361328,437,9.71,1347.5,1,ok
+False,True,False,False,False,grasp_failure,0,0.0,23.8,12,24,0,0,0.0,49.62335205078125,-64.43148803710938,385,8.56,1532.5,2,ok
+False,True,False,False,False,grasp_failure,0,0.0,23.8,12,24,0,0,0.0,61.5819206237793,-64.43148803710938,377,8.38,1450.2,3,ok
+False,True,False,False,False,grasp_failure,0,0.0,14.9,8,15,0,0,0.0,55.36723327636719,-64.68138122558594,248,5.51,1094.3,4,ok
+False,True,False,False,False,grasp_failure,0,0.0,14.9,8,15,0,0,0.0,58.47457504272461,-63.681800842285156,263,5.84,978.5,5,ok

@@ -1,0 +1,48 @@
+{
+  "_note": "Copy to labbench_config.json and edit the paths for your machine. Every script reads this file; LABBENCH_CONFIG selects a different one, which is how a second study becomes a second config rather than a fork.",
+  "robot": {
+    "port": "COM3",
+    "id": "my_follower",
+    "leader_port": "COM4",
+    "leader_id": "my_leader"
+  },
+  "cameras": {
+    "fixed": { "type": "opencv", "index_or_path": 0, "width": 640, "height": 480, "fps": 30 }
+  },
+  "dataset": { "fps": 30, "namespace": "YOUR_HF_USERNAME" },
+  "task": {
+    "name": "pick_remote",
+    "instruction": "Pick up the remote control",
+    "episode_time_s": 45,
+    "reset_time_s": 20
+  },
+  "scoring": {
+    "_note": "Decisions, not machine facts. Durations are in SECONDS - the recording loop runs on wall clock, so a frame count would ask a slower policy to hold longer than a faster one. See harness/labbench.py.",
+    "grip_close_threshold": 40.0,
+    "stable_closure_s": 0.5,
+    "hold_closure_s": 1.0,
+    "lift_gain": 10.0,
+    "descend_drop": 15.0,
+    "descend_lift_threshold": -30.0,
+    "move_total": 25.0,
+    "instability_rev_per_s": 2.7,
+    "demo_assumed_hz": 30.0
+  },
+  "safety": {
+    "temp_pause_threshold_c": 62,
+    "temp_resume_threshold_c": 57,
+    "max_connect_retries": 3
+  },
+  "paths": {
+    "env_python": "/path/to/your/python",
+    "lerobot_scripts": "/path/to/your/Scripts",
+    "work_dir": "/path/to/lerobot",
+    "hf_cache": "/path/to/.cache/huggingface/lerobot/YOUR_HF_USERNAME",
+    "ffmpeg": "/path/to/ffmpeg"
+  },
+  "policies": {
+    "_note": "A local checkpoint directory or a Hugging Face id.",
+    "act": "user/your-act-checkpoint",
+    "smolvla": "user/your-smolvla-checkpoint"
+  }
+}

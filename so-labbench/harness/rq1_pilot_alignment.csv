@@ -1,0 +1,11 @@
+run_id,condition,model,method,confidence,aligned,dx,dy,scale,rot,shift_px,shift_vs_c5,brightness,edge_density
+eval_rq1_pilot_act_1,pilot,act,features,20.0,False,-26.8,18.3,1.0172,-2.97,32.4,0.54,64.2,9.53
+eval_rq1_pilot_smolvla_1,pilot,smolvla,features,16.0,False,-27.8,17.4,1.0201,-2.88,32.8,0.55,62.1,8.14
+eval_rq1_pilot_smolvla_2,pilot,smolvla,features,18.0,False,-26.3,18.4,1.0161,-2.94,32.1,0.53,59.4,8.81
+eval_rq1_pilot_act_2,pilot,act,features,22.0,False,-25.8,18.9,1.0148,-2.95,32.0,0.53,61.6,8.28
+eval_rq1_pilot_act_3,pilot,act,features,17.0,False,-27.0,17.9,1.018,-2.88,32.4,0.54,62.7,8.48
+eval_rq1_pilot_smolvla_3,pilot,smolvla,features,19.0,False,-26.7,16.6,1.018,-2.71,31.5,0.52,64.7,7.74
+eval_rq1_pilot_smolvla_4,pilot,smolvla,features,15.0,False,-25.0,14.3,1.0164,-2.39,28.8,0.48,62.3,8.16
+eval_rq1_pilot_act_4,pilot,act,coarse,0.023,False,141.9,47.9,0.8475,0.0,149.7,2.5,32.6,3.71
+eval_rq1_pilot_act_5,pilot,act,coarse,0.028,False,-53.2,47.5,0.7353,0.0,71.4,1.19,32.8,3.58
+eval_rq1_pilot_smolvla_5,pilot,smolvla,coarse,0.034,False,173.6,63.6,1.2821,0.0,184.9,3.08,31.5,3.53

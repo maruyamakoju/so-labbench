@@ -1,0 +1,4 @@
+success,approach,grasp,lift,taxonomy,hold_frames,grip_min,lift_min,reversals,moved,trial,status
+False,True,False,False,grasp_failure,0,61.86440658569336,-63.681800842285156,777,1256.4,1,ok
+False,True,False,False,grasp_failure,0,62.052730560302734,-71.17867279052734,791,1403.8,2,ok
+False,True,False,False,grasp_failure,0,61.86440658569336,-84.00666046142578,782,1020.1,3,ok

@@ -1,0 +1,16 @@
+diff --git a/src/lerobot/datasets/lerobot_dataset.py b/src/lerobot/datasets/lerobot_dataset.py
+index a869cb92..8e5dda81 100644
+--- a/src/lerobot/datasets/lerobot_dataset.py
++++ b/src/lerobot/datasets/lerobot_dataset.py
+@@ -644,6 +644,11 @@ class LeRobotDataset(torch.utils.data.Dataset):
+             return get_hf_features_from_features(self.features)
+ 
+     def _get_query_indices(self, idx: int, ep_idx: int) -> tuple[dict[str, list[int | bool]]]:
++        # episode_data_index is positional over the loaded episodes, but ep_idx is the
++        # dataset-wide episode number. With an `episodes` subset the two differ
++        # (episodes=[0, 2, 52] -> positions 0, 1, 2), so map before indexing.
++        if self.episodes is not None:
++            ep_idx = self.episodes.index(ep_idx)
+         ep_start = self.episode_data_index["from"][ep_idx]
+         ep_end = self.episode_data_index["to"][ep_idx]
+         query_indices = {

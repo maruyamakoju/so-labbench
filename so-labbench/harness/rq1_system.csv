@@ -1,0 +1,1 @@
+run_id,timestamp,cpu_busy_pct,free_mem_mb,gpu_temp_c,gpu_clock_mhz,motor_max_temp_c

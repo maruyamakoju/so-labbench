@@ -1,0 +1,9 @@
+task,policy,success,identity,natural_step,noise_floor,aiming_sensitivity,frames,vision_dependence,camera_dominance,dominant_camera,blank_front,blank_top,blank_wrist
+eye_drops_to_basket,act,0.633,0.0,1.188,0.0,0.74,387,20.584,1.897,wrist,2.559,3.565,4.855
+cable_unclip,act,0.6,0.0,1.058,0.0,0.894,477,29.668,1.864,front,6.502,3.488,4.622
+ring_insert,act,0.5,0.0,0.756,0.0,0.778,494,22.951,1.304,wrist,2.681,2.226,2.903
+tool_removal,act,0.267,0.0,1.08,0.0,0.753,658,19.751,1.979,wrist,2.184,3.646,4.321
+tool_insert,act,0.117,0.0,1.032,0.0,1.221,859,31.875,2.068,wrist,4.069,3.133,6.48
+block_stack,act,0.0,0.0,0.84,0.0,1.214,545,25.17,1.486,wrist,4.8,3.246,4.824
+cable_clip,act,0.0,0.0,0.832,0.0,0.986,1126,33.655,1.333,top,3.919,4.881,3.663
+eye_drops_to_shelf,act,0.0,0.0,1.311,0.0,0.904,468,19.297,2.386,front,5.356,2.245,4.101
