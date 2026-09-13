@@ -146,24 +146,38 @@ def recompute(meta, traces, thresholds, min_frames, scale):
     return pd.DataFrame(rows, columns=["task", "policy", "outcome", "rate"])
 
 
-def within_cell_sign_test(frame):
+MIN_PER_SIDE = 3         # a cell needs this many successes AND failures to be comparable
+
+
+def within_cell_sign_test(frame, rate_column="rate"):
     """Per policy-task cell, does the failed rollout grasp more often than the successful one?
 
     This is the only comparison here that is not between tasks. Task difficulty, policy
     identity and the operator's stopping habits are all held fixed inside a cell, so whatever
     is left is the thing being asked about.
+
+    Returns the per-cell rows as well as the test, so the table printed in the report and the
+    number quoted in the finding come from one implementation. They were written twice at
+    first, and only the copy here was under test - the reported table could have drifted from
+    the tested one without anything failing.
     """
-    deltas = []
-    for _, g in frame[frame.policy != "teleoperated"].groupby(["task", "policy"]):
+    rows = []
+    for (task, policy), g in frame[frame.policy != "teleoperated"].groupby(["task", "policy"]):
         won, lost = g[g.outcome == "successful"], g[g.outcome == "failure"]
-        if len(won) < 3 or len(lost) < 3:
+        if len(won) < MIN_PER_SIDE or len(lost) < MIN_PER_SIDE:
             continue
-        deltas.append(lost.rate.median() - won.rate.median())
-    if not deltas:
-        return 0, 0, float("nan"), float("nan")
+        win = float(won[rate_column].median())
+        lose = float(lost[rate_column].median())
+        rows.append(dict(task=task, policy=policy, n_success=len(won), n_failure=len(lost),
+                         win_per_s=round(win, 3), lose_per_s=round(lose, 3),
+                         delta=round(lose - win, 3)))
+    if not rows:
+        return [], 0, 0, float("nan"), float("nan")
+    deltas = [r["delta"] for r in rows]
+    # A tie is not evidence in either direction, so it counts toward neither tail.
     higher, n = sum(1 for d in deltas if d > 0), len(deltas)
     p = sum(math.comb(n, k) for k in range(higher, n + 1)) / 2 ** n
-    return higher, n, p, float(np.median(deltas))
+    return rows, higher, n, p, float(np.median(deltas))
 
 
 def main():
@@ -251,32 +265,20 @@ def main():
     # ---------- the clean test: within a cell, successes against failures ----------
     print("\nWITHIN each policy-task cell: do the rollouts that SUCCEED grasp less often?")
     print("  (same policy, same task, so difficulty and policy identity cancel)")
-    paired = []
-    for (task, policy), g in per_ep[per_ep.policy != "teleoperated"].groupby(["task", "policy"]):
-        won, lost = g[g.outcome == "successful"], g[g.outcome == "failure"]
-        if len(won) < 3 or len(lost) < 3:
-            continue
-        paired.append(dict(task=task, policy=policy, n_success=len(won), n_failure=len(lost),
-                           win_per_s=round(won.closures_per_s.median(), 3),
-                           lose_per_s=round(lost.closures_per_s.median(), 3),
-                           delta=round(lost.closures_per_s.median() - won.closures_per_s.median(), 3)))
-    pair = pd.DataFrame(paired)
-    if pair.empty:
-        print("  no cell has at least 3 successes and 3 failures")
+    paired, higher, n, p, median_delta = within_cell_sign_test(per_ep, "closures_per_s")
+    if not paired:
+        print(f"  no cell has at least {MIN_PER_SIDE} successes and {MIN_PER_SIDE} failures")
     else:
-        pair = pair.sort_values("delta", ascending=False)
+        pair = pd.DataFrame(paired).sort_values("delta", ascending=False)
         pair.to_csv(HERE / "retry_rate_within_cell.csv", index=False)
         print(f"{'task':22} {'policy':11} {'win n':>6} {'lose n':>7} "
               f"{'win /s':>8} {'lose /s':>8} {'lose - win':>11}")
         for r in pair.itertuples():
             print(f"{r.task:22} {r.policy:11} {r.n_success:6d} {r.n_failure:7d} "
                   f"{r.win_per_s:8.3f} {r.lose_per_s:8.3f} {r.delta:+11.3f}")
-        higher, n = int((pair.delta > 0).sum()), len(pair)
-        # sign test: with no relation between grasping rate and outcome, the sign is a coin flip
-        p = sum(math.comb(n, k) for k in range(higher, n + 1)) / 2 ** n
         print(f"\n  failures grasp more often in {higher} of {n} cells "
               f"(one-sided sign test p={p:.3f})")
-        print(f"  median difference: {pair.delta.median():+.3f} closures per second")
+        print(f"  median difference: {median_delta:+.3f} closures per second")
 
     # Why the raw rate and the human-relative rate disagree in sign. If the human grasps
     # often per second on exactly the tasks the policies solve, then dividing by the human's
@@ -310,7 +312,7 @@ def main():
             pol = pol.dropna()
             r_raw = float(np.corrcoef(pol.rate, pol.sr)[0, 1])
             r_rel = float(np.corrcoef(pol.ratio, pol.sr)[0, 1])
-            higher, n, p, med_d = within_cell_sign_test(frame)
+            _, higher, n, p, med_d = within_cell_sign_test(frame)
             print(f"  {tag:40} {r_raw:+8.2f} {r_rel:+12.2f}   {higher:2d}/{n} p={p:.3f}")
 
     print("\nwrote retry_rate_episodes.csv, retry_rate_cells.csv, retry_rate_within_cell.csv")

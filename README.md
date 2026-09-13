@@ -105,8 +105,15 @@ from and the headline correlation falls from -0.38 to -0.22, crossing zero.
 
 The threshold is not assumed anywhere: it is measured per task from that task's own
 demonstrations, because an action value is a percentage of one arm's calibrated range and a
-constant imported from elsewhere would mean nothing. The counting itself is checked against
-24 hand-built traces with known answers.
+constant imported from elsewhere would mean nothing.
+
+A negative result is what a broken instrument produces most easily, so the instrument is
+checked rather than trusted. `mutation_check.py` breaks the analysis 19 ways and every one
+must be caught. The first version of the tests caught 8 of 19: they covered three leaf
+functions and none of the pipeline, and the mutation that removes the division by duration -
+which would destroy this finding's central claim - survived. The suite is now 44 checks and
+catches all 19. Re-running on the real data after that work left every reported number
+unchanged.
 
 **For anyone analysing ArmnetBench traces:** publish both the threshold and the normalisation,
 and check whether your quantity correlates with task difficulty before reporting a
