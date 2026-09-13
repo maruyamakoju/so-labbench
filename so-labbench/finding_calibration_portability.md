@@ -118,5 +118,8 @@ Hugging Face 上の SO-101 データセット 10 本について、`meta/stats.j
 ## 出典
 
 - 正規化の実装: `lerobot/motors/motors_bus.py` の `_normalize` / `_unnormalize`（lerobot 0.5.1）
-- 各データセットの `meta/stats.json` と `meta/info.json`（2026-09-13 取得、`public_gripper_ranges.csv`）
+- 各データセットの `meta/stats.json`（2026-09-13 取得、2026-09-14 再実行で一致）
+- 再現: `armnetbench/public_gripper_ranges.py` → `public_gripper_ranges.csv`。
+  10本の公開データセットを読み直し、較正ファイルの有無も同時に数える。表の全数値と
+  「較正を同梱しているリポジトリは0件」は、このスクリプト1本で再導出できる
 - 我々の較正: `~/.cache/huggingface/lerobot/calibration/robots/so_follower/my_follower.json`
