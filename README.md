@@ -86,6 +86,45 @@ What this cannot say: moving less is not using vision less well, and one VLA aga
 non-VLA is n=1 per class, so nothing here is about VLAs in general. Each checkpoint is a
 per-task fine-tune, so the architecture cannot be separated from the recipe.
 
+### SmolVLA runs on its joint state, ACT on its cameras - with an exception nobody configured
+[`so-labbench/finding_input_attribution.md`](so-labbench/finding_input_attribution.md) ·
+preregistration [`so-labbench/prereg_input_attribution.md`](so-labbench/prereg_input_attribution.md), published before the full run
+
+A policy has three kinds of input: cameras, joint state, and (SmolVLA only) an instruction.
+Removing each in turn on the same 2,607 frames across eight tasks, with every hypothesis and
+its threshold - 7 of 8 tasks - published before the run:
+
+| hypothesis | result | verdict |
+|---|---|---|
+| SmolVLA moves more without its joint state than without its cameras | 8/8 | supported |
+| SmolVLA barely uses its instruction | 0/8 | **not supported** |
+| ACT moves more without its cameras than without its joint state | 8/8 | supported |
+| a doubled state push moves the command further | 8/8 both | supported, **but see below** |
+
+- **SmolVLA**: replacing the joint state with its mean moves the command by 74-85% of the
+  demonstrations' action spread; blanking every camera moves it 9-15%. That is 5.0x to 8.8x,
+  on a comparison deliberately biased toward vision (black images are far out of
+  distribution, a mean state is not).
+- **ACT**: blanking the cameras moves it 83-130%. Its joint state is effectively unused on six
+  tasks (1.1% or less) and clearly used on two (cable_clip 41%, ring_insert 36%). All eight
+  checkpoints share one author and one configuration, and the step counts do not line up
+  with the split. Why two of them use state is unknown.
+- **The language prediction failed.** Each SmolVLA checkpoint was fine-tuned on one task with
+  the same instruction every time, so it should have learned to ignore it. Emptying the
+  instruction moves the command 3.0-6.4x its own sampling noise on every task - about as much
+  as losing all cameras.
+
+**A flaw registered before the run, then realised.** The dose check cannot tell a broken
+instrument from a policy that ignores its input. ACT passed it 8/8, but on the six state-blind
+tasks the doubled push moved the command by at most 1% of the spread. Delivery of the state is
+established separately: the normalised input tensor changes, and SmolVLA's response to the
+same push grows 1.8-2.0x. Verdicts were applied as registered anyway.
+
+**Why it matters to anyone running these checkpoints on their own arm:** joint-state values
+are percentages of one arm's calibrated range and do not transfer between arms. The policy
+that depends on them 5-9x more than on vision is SmolVLA. That is a prediction, not a
+measurement - the next experiment.
+
 ### On the task nobody solves, all seven policies get there and come back
 [`so-labbench/finding_failure_anatomy.md`](so-labbench/finding_failure_anatomy.md)
 
