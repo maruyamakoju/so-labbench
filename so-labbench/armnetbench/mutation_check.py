@@ -30,7 +30,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).parent
-SUITES = ["test_retry_rate.py", "test_vision_reliance.py"]
+SUITES = ["test_retry_rate.py", "test_vision_reliance.py", "test_input_attribution.py"]
 
 # (what it breaks, exact text, replacement)
 RETRY_MUTATIONS = [
@@ -125,8 +125,66 @@ VISION_MUTATIONS = [
      "    policy, task = os.path.basename(path)[:-4].split(\"__\")"),
 ]
 
+# A preregistration is only as good as the code that applies it. Every one of these is a way
+# to report a hypothesis as supported that the registered rule rejects, or to measure
+# something other than what the perturbation's name promises.
+JUDGE_MUTATIONS = [
+    ("the threshold drops from 7 of 8 to 6",
+     "THRESHOLD = 7 ", "THRESHOLD = 6 "),
+    ("a tie counts as a win for H1",
+     'lambda p, t: _value(df, p, t, "state_mean") > _value(df, p, t, "all_blank"))',
+     'lambda p, t: _value(df, p, t, "state_mean") >= _value(df, p, t, "all_blank"))'),
+    ("H3 is judged in the same direction as H1 instead of the reverse",
+     'lambda p, t: _value(df, p, t, "all_blank") > _value(df, p, t, "state_mean"))',
+     'lambda p, t: _value(df, p, t, "state_mean") > _value(df, p, t, "all_blank"))'),
+    ("H2 needs only one of the two language perturbations to be quiet",
+     "        return (_value(df, p, t, \"task_blank\") < floor\n                and _value(df, p, t, \"task_other\") < floor)",
+     "        return (_value(df, p, t, \"task_blank\") < floor\n                or _value(df, p, t, \"task_other\") < floor)"),
+    ("exactly twice the noise counts as quiet",
+     '        return (_value(df, p, t, "task_blank") < floor',
+     '        return (_value(df, p, t, "task_blank") <= floor'),
+    ("H1 and H3 are read even when the state perturbation is broken",
+     '    if out["H4"]:\n        out["H1"] = h1 >= THRESHOLD',
+     '    if True:\n        out["H1"] = h1 >= THRESHOLD'),
+    ("H4 passes if either policy passes",
+     '    out["H4"] = all(n >= THRESHOLD for n in h4.values())',
+     '    out["H4"] = any(n >= THRESHOLD for n in h4.values())'),
+    ("an incomplete run still gets verdicts",
+     "    if not complete:\n        # A verdict",
+     "    if False:\n        # A verdict"),
+    ("identity only has to be small, not exactly zero",
+     '               if _value(df, p, t, "identity") != 0.0]',
+     '               if abs(_value(df, p, t, "identity")) > 0.01]'),
+]
+
+ATTRIBUTION_MUTATIONS = [
+    ("the two noise doses use the same scale, so H4 compares a push to itself",
+     "        return state + 1.0 * np.asarray(sd) * np.asarray(z)",
+     "        return state + 0.5 * np.asarray(sd) * np.asarray(z)"),
+    ("state_mean leaves the state alone, so nothing is removed",
+     "        return np.asarray(mean, dtype=np.float64).copy()",
+     "        return state.copy()"),
+    ("the gripper is always pushed up, past its end stop when already open",
+     "        direction = -1.0 if state[GRIPPER] > mean[GRIPPER] else 1.0",
+     "        direction = 1.0"),
+    ("the gripper push is applied to the whole arm",
+     "        out[GRIPPER] = state[GRIPPER] + direction * sd[GRIPPER]",
+     "        out = state + direction * sd"),
+    ("task_blank sends the real instruction",
+     '    if name == "task_blank":\n        return ""',
+     '    if name == "task_blank":\n        return instruction'),
+    ("task_other sends the task's own instruction, so the swap is a no-op",
+     "    return TASKS[TASK_ORDER[(i + 1) % len(TASK_ORDER)]][\"instruction\"]",
+     "    return TASKS[TASK_ORDER[i]][\"instruction\"]"),
+    ("a perturbation is silently dropped from the run",
+     'TASK_PERTURBATIONS = ["task_blank", "task_other"]',
+     'TASK_PERTURBATIONS = ["task_blank"]'),
+]
+
 MUTATIONS = ([("retry_rate.py", *m) for m in RETRY_MUTATIONS]
-             + [("vision_reliance.py", *m) for m in VISION_MUTATIONS])
+             + [("vision_reliance.py", *m) for m in VISION_MUTATIONS]
+             + [("judge_input_attribution.py", *m) for m in JUDGE_MUTATIONS]
+             + [("input_attribution.py", *m) for m in ATTRIBUTION_MUTATIONS])
 
 
 def run_suite():
