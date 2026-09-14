@@ -37,12 +37,54 @@ output does between two consecutive frames anyway.
   10% zooms, or a 30% lighting change.
 - Blur does, by more than any aiming error. Optics matter more than position.
 - On this task, blanking the wrist moves ACT most and blanking the front moves SmolVLA most.
-  Across all eight tasks ACT's dominant view is the wrist five times, the front twice and the
-  top once, so which view a policy leans on is a property of the task, not the architecture -
-  a correction to what this note first claimed from one task.
+  Across all eight tasks ACT's dominant view changes with the task: wrist five times, front
+  twice, top once. SmolVLA's is the front camera on all eight. So which view a policy leans on
+  is a property of the task **for ACT** and a stable preference **for SmolVLA** - see the
+  correction note under the next finding, because this sentence has now been wrong twice.
 - Blanking all three moves ACT 20.6x its natural step — 1.9x the sum of the single-camera
-  effects. These policies use vision heavily and redundantly: losing one view is survivable
-  because the others carry it.
+  effects. **ACT** uses vision heavily and redundantly: losing one view is survivable because
+  the others carry it. SmolVLA does not share this - its combined effect is at or below the
+  sum of the single views on seven of eight tasks.
+
+### SmolVLA responds to its cameras five to eleven times less than ACT, on every task
+[`so-labbench/finding_vision_reliance_act_vs_smolvla.md`](so-labbench/finding_vision_reliance_act_vs_smolvla.md)
+
+The eight-task grid, for both policies this machine can run. Blanking all three cameras moves
+ACT's commanded action by about one standard deviation of the human demonstrations on that
+task (82-132%). It moves SmolVLA's by an eighth of one (9-17%). ACT is higher on **8 of 8**
+tasks, by 5.4x to 10.7x, and the closest pair is still 3.8x apart.
+
+The grid normally reports effects as multiples of the policy's own one-frame step, which is
+the wrong scale for comparing two policies: the denominator belongs to the thing being
+measured. So the result is stated against three denominators that fail differently - raw
+action units, the policy's own step, and the demonstrations' spread, which belongs to neither
+policy. All three agree, and the two policies' natural steps are close enough (0.76-1.19
+against 0.64-1.04) to rule the artefact out directly.
+
+- **SmolVLA leans on the front camera on all eight tasks**; ACT's preference changes with the
+  task on the same rig, which rules out the camera placement as the cause. One view winning
+  all eight by chance is 1 in 2,187. The lean is small, though: on five tasks the front
+  camera's lead is smaller than SmolVLA's own per-frame sampling noise.
+- **ACT's views back each other up; SmolVLA's do not.** Blanking all three divided by the sum
+  of blanking each: ACT 1.65-2.94, above 1 on 8 of 8. SmolVLA 0.73-1.04, above 1 on 1 of 8.
+- **Neither policy's vision reliance predicts its success rate** (ACT r = -0.22, SmolVLA
+  r = -0.28, both intervals spanning zero).
+
+**A claim that dissolved on the way.** SmolVLA's reliance looked task-invariant - 4.3 to 5.3
+times its natural step across eight tasks, against ACT's 17.5 to 33.2. Checked across the
+three denominators, the invariance exists in that one only: SmolVLA's coefficient of
+variation across tasks is 6% there, but 20% raw and 18% task-relative, matching ACT's 21% and
+17%. It was a property of the denominator. The tool was built to catch exactly that, and
+what it caught was its author.
+
+**This corrected two earlier sentences in this README** - "which view a policy leans on is a
+property of the task, not the architecture" and "these policies use vision redundantly" - both
+generalised from ACT alone. The first was itself already a correction of a one-task
+generalisation, fixed with a one-policy generalisation.
+
+What this cannot say: moving less is not using vision less well, and one VLA against one
+non-VLA is n=1 per class, so nothing here is about VLAs in general. Each checkpoint is a
+per-task fine-tune, so the architecture cannot be separated from the recipe.
 
 ### On the task nobody solves, all seven policies get there and come back
 [`so-labbench/finding_failure_anatomy.md`](so-labbench/finding_failure_anatomy.md)
