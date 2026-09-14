@@ -1,32 +1,39 @@
-# Do the retry-rate tests actually catch anything?
+# Do the analysis tests actually catch anything?
 #
 #   python mutation_check.py            # break the code, each way must be caught
-#   python mutation_check.py --list     # what it breaks, without touching the file
+#   python mutation_check.py --list     # what it breaks, without touching any file
 #
-# test_retry_rate.py passing is not evidence by itself. Tests written after the code tend to
-# assert what the code does rather than what it should do, and the finding that rests on this
-# code is a NEGATIVE result - "grasping more than the human does not predict failure" - which
-# is exactly the kind of claim a broken counter produces by accident. A counter that always
-# returned the same number would make every difference vanish and every test of the pipeline
-# look calm.
+# A passing suite is not evidence by itself. Tests written after the code tend to assert what
+# the code does rather than what it should do, and both files covered here are unusually good
+# at hiding a defect behind a plausible number:
+#
+#   retry_rate.py      produces a NEGATIVE result, and a broken counter is the easiest way to
+#                      get one. A counter that flattened every trace to the same value would
+#                      make every difference vanish and every test read calm.
+#   vision_reliance.py exists to stop one denominator from manufacturing a conclusion. A bug
+#                      in how it builds those denominators would defeat its only purpose, and
+#                      would do it quietly, by making three numbers agree because they are
+#                      secretly the same number.
 #
 # So each mutation below is a defect that was real here or would be easy to introduce, and
-# every one must make at least one check fail. A survivor is a hole in the suite at exactly
-# that behaviour.
+# every one must make at least one check fail. A survivor is a hole in the suites at exactly
+# that behaviour. This is not hypothetical: the retry-rate suite as first written caught 8 of
+# its 19, and the survivors included removing the division by duration, which alone would have
+# inverted the finding's central claim.
 #
-# The file is restored from its own bytes rather than from git, so this is safe on a dirty
-# tree. It refuses to start if the suite is already failing, because a survivor could not
-# then be told apart from the existing failure.
+# Each file is restored from its own bytes rather than from git, so this is safe on a dirty
+# tree. It refuses to start if a suite is already failing, because a survivor could not then
+# be told apart from the existing failure.
 import argparse
 import subprocess
 import sys
 from pathlib import Path
 
 HERE = Path(__file__).parent
-TARGET = "retry_rate.py"
+SUITES = ["test_retry_rate.py", "test_vision_reliance.py"]
 
 # (what it breaks, exact text, replacement)
-MUTATIONS = [
+RETRY_MUTATIONS = [
     ("a grasp lasting exactly the minimum stops counting",
      "return sum(1 for a, b in zip(starts, ends) if b - a >= min_frames)",
      "return sum(1 for a, b in zip(starts, ends) if b - a > min_frames)"),
@@ -89,14 +96,53 @@ MUTATIONS = [
 ]
 
 
+# Which analysis file each mutation edits. Both suites run for every mutation, because a
+# defect in one file can be the thing another file's test was relying on.
+VISION_MUTATIONS = [
+    ("the natural step is taken from one joint instead of all six",
+     "    natural = float(np.mean([any_row[f\"natural_{j}\"] for j in JOINTS]))",
+     "    natural = float(any_row[f\"natural_{JOINTS[0]}\"])"),
+    ("the task-relative denominator is secretly the policy-relative one",
+     "    sigma = float(np.mean([any_row[f\"sigma_{j}\"] for j in JOINTS]))",
+     "    sigma = float(np.mean([any_row[f\"natural_{j}\"] for j in JOINTS]))"),
+    ("the noise floor reads identity, which is zero by construction",
+     "               noise_raw=round(float(d.delta_mean.get(\"resample\", 0.0)), 2))",
+     "               noise_raw=round(float(d.delta_mean.get(\"identity\", 0.0)), 2))"),
+    ("the percentage of demo spread is divided by the natural step instead",
+     "            out[f\"{v}_sigma\"] = round(100 * raw / sigma, 1) if sigma else float(\"nan\")",
+     "            out[f\"{v}_sigma\"] = round(100 * raw / natural, 1) if natural else float(\"nan\")"),
+    ("the percentage loses its hundred, so everything looks a hundred times smaller",
+     "            out[f\"{v}_sigma\"] = round(100 * raw / sigma, 1) if sigma else float(\"nan\")",
+     "            out[f\"{v}_sigma\"] = round(raw / sigma, 1) if sigma else float(\"nan\")"),
+    ("the policy-relative figure is recomputed after averaging instead of read per joint",
+     "            out[f\"{v}_natural\"] = round(float(d.relative_mean[v]), 1)",
+     "            out[f\"{v}_natural\"] = round(raw / natural, 1)"),
+    ("the single views collapse into the all-cameras number",
+     "VIEWS = [\"all_blank\", \"wrist_blank\", \"front_blank\", \"top_blank\"]",
+     "VIEWS = [\"all_blank\"]"),
+    ("task and policy are read the wrong way round out of the file name",
+     "    task, policy = os.path.basename(path)[:-4].split(\"__\")",
+     "    policy, task = os.path.basename(path)[:-4].split(\"__\")"),
+]
+
+MUTATIONS = ([("retry_rate.py", *m) for m in RETRY_MUTATIONS]
+             + [("vision_reliance.py", *m) for m in VISION_MUTATIONS])
+
+
 def run_suite():
-    out = subprocess.run([sys.executable, str(HERE / "test_retry_rate.py")],
-                         cwd=HERE, capture_output=True, text=True)
-    line = next((l for l in out.stdout.splitlines() if "checks passed" in l), "")
-    if not line:
-        # A mutation that makes the suite crash outright is caught, not survived.
-        return 99, (out.stderr.strip().splitlines() or ["no output"])[-1][:160]
-    return int(line.split(",")[1].strip().split()[0]), line.strip()
+    failed, lines = 0, []
+    for suite in SUITES:
+        out = subprocess.run([sys.executable, str(HERE / suite)],
+                             cwd=HERE, capture_output=True, text=True)
+        line = next((l for l in out.stdout.splitlines() if "checks passed" in l), "")
+        if not line:
+            # A mutation that makes a suite crash outright is caught, not survived.
+            failed += 99
+            lines.append(f"{suite}: " + (out.stderr.strip().splitlines() or ["no output"])[-1][:100])
+            continue
+        failed += int(line.split(",")[1].strip().split()[0])
+        lines.append(f"{suite}: {line.strip()}")
+    return failed, "; ".join(lines)
 
 
 def main():
@@ -106,8 +152,8 @@ def main():
     args = ap.parse_args()
 
     if args.list:
-        for i, (what, _, _) in enumerate(MUTATIONS, 1):
-            print(f"{i:2}. {what}")
+        for i, (f, what, _, _) in enumerate(MUTATIONS, 1):
+            print(f"{i:2}. {f:20} {what}")
         return 0
 
     baseline_failed, baseline_line = run_suite()
@@ -116,13 +162,13 @@ def main():
                          "or a surviving mutation cannot be told apart from it")
     print(f"baseline: {baseline_line}\n")
 
-    path = HERE / TARGET
     survivors = []
-    for i, (what, old, new) in enumerate(MUTATIONS, 1):
+    for i, (filename, what, old, new) in enumerate(MUTATIONS, 1):
+        path = HERE / filename
         original = path.read_text(encoding="utf-8")
         if original.count(old) != 1:
-            survivors.append((what, "PATTERN NOT FOUND - this mutation no longer applies"))
-            print(f"{i:2}. {'SKIP':8} {what}")
+            survivors.append((filename, what, "PATTERN NOT FOUND - this mutation no longer applies"))
+            print(f"{i:2}. {'SKIP':8} {filename:20} {what}")
             continue
         path.write_text(original.replace(old, new), encoding="utf-8")
         try:
@@ -130,17 +176,17 @@ def main():
         finally:
             path.write_text(original, encoding="utf-8")
         if failed:
-            print(f"{i:2}. {'caught':8} {what}  ({failed} failed)")
+            print(f"{i:2}. {'caught':8} {filename:20} {what}")
         else:
-            survivors.append((what, line))
-            print(f"{i:2}. {'SURVIVED':8} {what}")
+            survivors.append((filename, what, line))
+            print(f"{i:2}. {'SURVIVED':8} {filename:20} {what}")
 
     print()
     if survivors:
         print(f"{len(survivors)} of {len(MUTATIONS)} mutations were not caught:\n")
-        for what, detail in survivors:
-            print(f"  {what}\n    {detail}")
-        print("\nEach survivor is a hole in test_retry_rate.py at exactly that behaviour.")
+        for filename, what, detail in survivors:
+            print(f"  {filename}: {what}\n    {detail}")
+        print("\nEach survivor is a hole in the suites at exactly that behaviour.")
         return 1
     print(f"all {len(MUTATIONS)} mutations caught")
     return 0
